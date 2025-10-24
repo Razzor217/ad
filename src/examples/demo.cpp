@@ -13,11 +13,12 @@ auto main() -> int
     std::cout << ad::derivative(g, .5) << std::endl;
     std::cout << ad::numeric_derivative(g, .5) << std::endl;
 
-    auto h = []<typename T>(std::vector<T> const& xs) {
-        return ad::sin(ad::pow(xs[0], xs[1] + xs[2])) - 3. * xs[2] * ad::log(ad::pow(xs[0], 2.) * ad::pow(xs[1], 3.));
+    auto h = []<typename T>(std::array<T, 3> const& xs) {
+        auto [x, y, z] = xs;
+        return ad::sin(ad::pow(x, y + z)) - 3. * z * ad::log(ad::pow(x, 2.) * ad::pow(y, 3.));
     };
 
-    std::vector xs { .5, 4., -2.3 };
+    std::array xs { .5, 4., -2.3 };
     std::cout << ad::partial(h, xs, 1) << std::endl;
     std::cout << ad::numeric_partial(h, xs, 1) << std::endl;
 

@@ -12,6 +12,7 @@ auto pow(T const base, T const exp) -> T
 {
     return std::pow(base, exp);
 }
+
 template <typename T>
     requires arithmetic<T>
 auto pow(Dual<T> const& base, Dual<T> const& exp) -> Dual<T>
@@ -127,6 +128,55 @@ template <typename T>
 auto tan(Dual<T> const& x) -> Dual<T>
 {
     return { std::tan(x.real), x.dual / (std::cos(x.real) * std::cos(x.real)) };
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto sgn(T const x) -> T
+{
+    return (T {} < x) - (x < T {});
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto abs(T const x) -> T
+{
+    return std::abs(x);
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto abs(Dual<T> const& x) -> T
+{
+    return abs(x.real);
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto abs2(Dual<T> const& x) -> T
+{
+    return x.real * x.real;
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto real(Dual<T> const& x) -> T
+{
+    return x.real;
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto imag(Dual<T> const& x) -> T
+{
+    return x.dual;
+}
+
+template <typename T>
+    requires arithmetic<T>
+auto conj(Dual<T> const& x) -> Dual<T>
+{
+    return { x.real, -x.dual };
 }
 
 }

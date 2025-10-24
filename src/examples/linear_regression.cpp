@@ -16,15 +16,15 @@ auto main() -> int
     constexpr std::size_t N = 500;
     constexpr std::size_t training_iterations = 10000;
 
-    std::vector<double> xs(N);
-    std::vector<double> ys(N);
+    std::array<double, N> xs {};
+    std::array<double, N> ys {};
 
     for (std::size_t i {}; i < N; ++i) {
         xs[i] = x_dist(gen);
         ys[i] = f(xs[i]) + noise_dist(gen);
     }
 
-    auto loss = [&xs, &ys]<typename T>(std::vector<T> const& vs) {
+    auto loss = [&xs, &ys]<typename T>(std::array<T, 2> const& vs) -> T {
         T l = 0.;
         for (std::size_t i {}; i < N; ++i)
             l += ad::pow(ys[i] - (vs[0] * xs[i] + vs[1]), 2.);
@@ -36,7 +36,7 @@ auto main() -> int
     auto learning_rate = .1;
 
     for (std::size_t i {}; i < training_iterations; ++i) {
-        auto grad = ad::gradient(loss, std::vector { a, b });
+        auto grad = ad::gradient(loss, std::array { a, b });
 
         a -= learning_rate * grad[0];
         b -= learning_rate * grad[1];
