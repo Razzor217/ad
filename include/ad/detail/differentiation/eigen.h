@@ -29,6 +29,28 @@ concept eigen_function_nd = R != Eigen::Dynamic && C != Eigen::Dynamic && requir
 };
 
 template <typename F, typename T, int M>
+    requires eigen_function<F, T, M, 1>
+auto partial(F f, Eigen::Matrix<T, M, 1> const& x, std::size_t const wrt) -> Dual<T>
+{
+    Eigen::Matrix<Dual<T>, M, 1> dX { Eigen::Matrix<Dual<T>, M, 1>::Constant(Dual<T> {}) };
+    for (int i {}; i < M; ++i)
+        dX(i) = { x(i), (i == wrt) ? T { 1. } : T { 0. } };
+
+    return f(dX).dual;
+}
+
+template <typename F, typename T, int M>
+    requires eigen_function<F, T, M, 1>
+auto gradient(F f, Eigen::Matrix<T, M, 1> const& x) -> Eigen::Matrix<T, 1, M>
+{
+    Eigen::Matrix<T, 1, M> grad { Eigen::Matrix<T, 1, M>::Zero() };
+    for (int i {}; i < M; ++i)
+        grad(i) = partial(f, x, i);
+
+    return grad;
+}
+
+template <typename F, typename T, int M>
     requires eigen_function_nd<F, T, M, 1>
 auto jacobian(F f, Eigen::Matrix<T, M, 1> const& X)
 {
