@@ -29,168 +29,92 @@ struct Dual {
     auto operator=(Dual&&) -> Dual& = default;
 };
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+(Dual<T> const& x) -> Dual<T>
-{
-    return { +x.real, +x.dual };
-}
+template <typename T> auto operator+(Dual<T> const& x) -> Dual<T> { return { +x.real, +x.dual }; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-(Dual<T> const& x) -> Dual<T>
-{
-    return { -x.real, -x.dual };
-}
+template <typename T> auto operator-(Dual<T> const& x) -> Dual<T> { return { -x.real, -x.dual }; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator+(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
 {
     return { left.real + right.real, left.dual + right.dual };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+(Dual<T> const& left, T const right) -> Dual<T>
+template <typename T> auto operator+(Dual<T> const& left, T const right) -> Dual<T>
 {
     return { left.real + right, left.dual };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+(T const left, Dual<T> const& right) -> Dual<T>
-{
-    return right + left;
-}
+template <typename T> auto operator+(T const left, Dual<T> const& right) -> Dual<T> { return right + left; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator-(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
 {
     return { left.real - right.real, left.dual - right.dual };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-(Dual<T> const& left, T const right) -> Dual<T>
+template <typename T> auto operator-(Dual<T> const& left, T const right) -> Dual<T>
 {
     return { left.real - right, left.dual };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-(T const left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator-(T const left, Dual<T> const& right) -> Dual<T>
 {
     return { left - right.real, -right.dual };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator*(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator*(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
 {
     return { left.real * right.real, left.real * right.dual + left.dual * right.real };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator*(Dual<T> const& left, T const right) -> Dual<T>
+template <typename T> auto operator*(Dual<T> const& left, T const right) -> Dual<T>
 {
     return { left.real * right, left.dual * right };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator*(T const left, Dual<T> const& right) -> Dual<T>
-{
-    return right * left;
-}
+template <typename T> auto operator*(T const left, Dual<T> const& right) -> Dual<T> { return right * left; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator/(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator/(Dual<T> const& left, Dual<T> const& right) -> Dual<T>
 {
     assert(right.real != T {});
     return { left.real / right.real, (left.dual * right.real - left.real * right.dual) / (right.real * right.real) };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator/(Dual<T> const& left, T const right) -> Dual<T>
+template <typename T> auto operator/(Dual<T> const& left, T const right) -> Dual<T>
 {
     assert(right != T {});
     return { left.real / right, left.dual / right };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator/(T const left, Dual<T> const& right) -> Dual<T>
+template <typename T> auto operator/(T const left, Dual<T> const& right) -> Dual<T>
 {
     assert(right.real != T {});
     return { left / right.real, (-left * right.dual) / (right.real * right.real) };
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+=(Dual<T>& left, Dual<T> const& right) -> Dual<T>&
-{
-    return left = left + right;
-}
+template <typename T> auto operator+=(Dual<T>& left, Dual<T> const& right) -> Dual<T>& { return left = left + right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator+=(Dual<T>& left, T const right) -> Dual<T>&
-{
-    return left = left + right;
-}
+template <typename T> auto operator+=(Dual<T>& left, T const right) -> Dual<T>& { return left = left + right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-=(Dual<T>& left, Dual<T> const& right) -> Dual<T>&
-{
-    return left = left - right;
-}
+template <typename T> auto operator-=(Dual<T>& left, Dual<T> const& right) -> Dual<T>& { return left = left - right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator-=(Dual<T>& left, T const right) -> Dual<T>&
-{
-    return left = left - right;
-}
+template <typename T> auto operator-=(Dual<T>& left, T const right) -> Dual<T>& { return left = left - right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator*=(Dual<T>& left, Dual<T> const& right) -> Dual<T>&
-{
-    return left = left * right;
-}
+template <typename T> auto operator*=(Dual<T>& left, Dual<T> const& right) -> Dual<T>& { return left = left * right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator*=(Dual<T>& left, T const right) -> Dual<T>&
-{
-    return left = left * right;
-}
+template <typename T> auto operator*=(Dual<T>& left, T const right) -> Dual<T>& { return left = left * right; }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator/=(Dual<T>& left, Dual<T> const& right) -> Dual<T>&
+template <typename T> auto operator/=(Dual<T>& left, Dual<T> const& right) -> Dual<T>&
 {
     assert(right.real != T {});
     return left = left / right;
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator/=(Dual<T>& left, T const right) -> Dual<T>&
+template <typename T> auto operator/=(Dual<T>& left, T const right) -> Dual<T>&
 {
     assert(right != T {});
     return left = left / right;
 }
 
-template <typename T>
-    requires arithmetic<T>
-auto operator<<(std::ostream& out, Dual<T> const& v) -> std::ostream&
+template <typename T> auto operator<<(std::ostream& out, Dual<T> const& v) -> std::ostream&
 {
     return out << '(' << v.real << ", " << v.dual << ')';
 }

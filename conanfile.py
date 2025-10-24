@@ -20,9 +20,6 @@ class AD(ConanFile):
         self.test_requires("catch2/3.10.0")
         self.test_requires("benchmark/1.9.4")
 
-    def layout(self):
-        cmake_layout(self)
-
     def generate(self):
         CMakeDeps(self).generate()
         CMakeToolchain(self).generate()
