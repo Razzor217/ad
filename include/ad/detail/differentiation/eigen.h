@@ -21,19 +21,11 @@ concept eigen_function = requires(F f, Eigen::Matrix<T, R, C> X) {
     { f(X) } -> std::convertible_to<T>;
 };
 
-// template <typename F, typename T, int IR, int IC, int OR, int OC>
-// concept eigen_function_nd = requires(F f, Eigen::Matrix<T, IR, IC> X) {
-//     { f(X) } -> std::convertible_to<Eigen::Matrix<T, OR, OC>>;
-// };
-
 template <typename F, typename T, int R, int C>
-concept eigen_function_nd = requires(F f, Eigen::Matrix<T, R, C> X) {
-    typename decltype(f(X))::Scalar;
-    requires std::same_as<typename decltype(f(X))::Scalar, T>;
-    R != Eigen::Dynamic;
-    C != Eigen::Dynamic;
-    detail::eigen_function_traits<F, T, R, C>::out_rows != Eigen::Dynamic;
-    detail::eigen_function_traits<F, T, R, C>::out_cols != Eigen::Dynamic;
+concept eigen_function_nd = R != Eigen::Dynamic && C != Eigen::Dynamic && requires(F f, Eigen::Matrix<T, R, C> X) {
+    requires detail::eigen_function_traits<F, T, R, C>::out_rows != Eigen::Dynamic;
+    requires detail::eigen_function_traits<F, T, R, C>::out_cols != Eigen::Dynamic;
+    requires std::is_same_v<typename decltype(f(X))::Scalar, T>;
 };
 
 template <typename F, typename T, int M>
