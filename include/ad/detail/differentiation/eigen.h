@@ -22,6 +22,13 @@ template <typename F, typename T, int X, int U> struct eigen_function_traits_xu 
     constexpr static int out_cols = return_type::ColsAtCompileTime;
 };
 
+template <typename F, typename T, int X> struct eigen_function_traits_x {
+    using x_type = Eigen::Matrix<T, X, 1>;
+    using return_type = decltype(std::declval<F>()(std::declval<x_type>(), std::declval<T>()));
+
+    constexpr static int out_rows = return_type::RowsAtCompileTime;
+    constexpr static int out_cols = return_type::ColsAtCompileTime;
+};
 }
 namespace ad {
 
@@ -44,6 +51,13 @@ concept eigen_function_xu = X != Eigen::Dynamic && U != Eigen::Dynamic
            requires detail::eigen_function_traits_xu<F, T, X, U>::out_cols != Eigen::Dynamic;
            requires std::is_same_v<typename decltype(f(x, u, dt))::Scalar, T>;
        };
+
+template <typename F, typename T, int X>
+concept eigen_function_x = X != Eigen::Dynamic && requires(F f, Eigen::Matrix<T, X, 1> x, T dt) {
+    requires detail::eigen_function_traits_x<F, T, X>::out_rows != Eigen::Dynamic;
+    requires detail::eigen_function_traits_x<F, T, X>::out_cols != Eigen::Dynamic;
+    requires std::is_same_v<typename decltype(f(x, dt))::Scalar, T>;
+};
 
 template <typename F, typename T, int M>
     requires eigen_function<F, T, M, 1>
@@ -114,4 +128,27 @@ auto jacobian(F f, Eigen::Matrix<T, X, 1> const& x, Eigen::Matrix<T, U, 1> const
 
     return J;
 }
+
+template <typename F, typename T, int X>
+    requires eigen_function_x<F, T, X>
+auto jacobian(F f, Eigen::Matrix<T, X, 1> const& x, T const dt)
+{
+    constexpr int N = detail::eigen_function_traits_x<F, T, X>::out_rows;
+    Eigen::Matrix<T, N, X> J { Eigen::Matrix<T, N, X>::Zero() };
+    Dual<T> const ddt { dt };
+
+    for (int ix {}; ix < X; ++ix) {
+        Eigen::Matrix<Dual<T>, X, 1> dx { Eigen::Matrix<Dual<T>, X, 1>::Constant(Dual<T> {}) };
+        for (int i {}; i < X; ++i)
+            dx(i) = { x(i), (i == ix) ? T { 1. } : T { 0. } };
+
+        auto df = f(dx, ddt);
+
+        for (int n {}; n < N; ++n)
+            J(n, ix) = df(n).dual;
+    }
+
+    return J;
+}
+
 }
