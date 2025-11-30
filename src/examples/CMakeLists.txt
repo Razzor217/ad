@@ -4,3 +4,6 @@ add_executable(linear_regression linear_regression.cpp)
 target_link_libraries(linear_regression PRIVATE ad)
 add_executable(demo_eigen demo_eigen.cpp)
 target_link_libraries(demo_eigen PRIVATE ad)
+
+add_executable(cg cg.cpp)
+target_link_libraries(cg PRIVATE ad)
