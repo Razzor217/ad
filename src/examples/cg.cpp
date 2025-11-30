@@ -2,6 +2,9 @@
 
 #include <ad/detail/graph/addition.h>
 #include <ad/detail/graph/constant.h>
+#include <ad/detail/graph/division.h>
+#include <ad/detail/graph/multiplication.h>
+#include <ad/detail/graph/subtraction.h>
 #include <ad/detail/graph/variable.h>
 
 auto main() -> int
@@ -27,6 +30,10 @@ auto main() -> int
     auto a4 = 5. + a3;
 
     std::cout << a4.value() << std::endl;
+
+    auto s1 = a4 - 6.;
+
+    std::cout << s1.value() << std::endl;
 
     return 0;
 }
