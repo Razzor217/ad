@@ -29,10 +29,6 @@ private:
 };
 
 template <node A> auto cos(A& arg) -> cos_impl<A> { return cos_impl { arg }; }
-template <typename T> auto cos(T const arg) -> cos_impl<constant<T>>
-{
-    constant c { arg };
-    return cos_impl { c };
-}
+template <typename T> auto cos(T const arg) -> constant<T> { return constant { std::cos(arg) }; }
 
 }

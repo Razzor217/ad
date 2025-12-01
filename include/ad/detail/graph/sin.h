@@ -29,10 +29,6 @@ private:
 };
 
 template <node A> auto sin(A& arg) -> sin_impl<A> { return sin_impl { arg }; }
-template <typename T> auto sin(T const arg) -> sin_impl<constant<T>>
-{
-    constant c { arg };
-    return sin_impl { c };
-}
+template <typename T> auto sin(T const arg) -> constant<T> { return constant { std::sin(arg) }; }
 
 }
