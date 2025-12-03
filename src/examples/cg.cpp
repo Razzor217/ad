@@ -1,39 +1,28 @@
 #include <iostream>
 
-#include <ad/detail/graph/addition.h>
-#include <ad/detail/graph/constant.h>
-#include <ad/detail/graph/division.h>
-#include <ad/detail/graph/multiplication.h>
-#include <ad/detail/graph/subtraction.h>
-#include <ad/detail/graph/variable.h>
+#include <ad/graph.h>
 
 auto main() -> int
 {
-    ad::constant c1 { 1. };
-    ad::variable v2 { 2. };
-    ad::constant c3 { 3. };
+    auto f = [](auto x) { return ad::pow(ad::sin(x), ad::sin(x)); };
+    auto x = ad::variable(M_PI_4);
+    f(x)->gradient(1.);
+    std::cout << x->gradient() << std::endl;
 
-    auto a1 = c1 + v2;
-    auto a2 = a1 + c3;
+    auto g = [](auto x) { return ad::pow(x, 2.) * ad::pow(2., x); };
+    x = ad::variable(.5);
+    g(x)->gradient(1.);
+    std::cout << x->gradient() << std::endl;
 
-    std::cout << a1.value() << std::endl;
-    std::cout << a2.value() << std::endl;
+    auto h = []<typename T>(std::array<T, 3> const& xs) {
+        auto [x, y, z] = xs;
+        return ad::sin(ad::pow(x, y + z)) - 3. * z * ad::log(ad::pow(x, 2.) * ad::pow(y, 3.));
+    };
 
-    a2.gradient(1);
-
-    std::cout << v2.gradient() << std::endl;
-
-    auto a3 = a1 + 4.;
-
-    std::cout << a3.value() << std::endl;
-
-    auto a4 = 5. + a3;
-
-    std::cout << a4.value() << std::endl;
-
-    auto s1 = a4 - 6.;
-
-    std::cout << s1.value() << std::endl;
+    std::array xs { ad::variable(.5), ad::variable(4.), ad::variable(-2.3) };
+    auto [a, b, c] = xs;
+    h(xs)->gradient(1.);
+    std::cout << b->gradient() << std::endl;
 
     return 0;
 }

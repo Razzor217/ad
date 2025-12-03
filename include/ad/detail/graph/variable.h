@@ -1,8 +1,11 @@
 #pragma once
 
+#include <ad/detail/graph/node.h>
+#include <memory>
+
 namespace ad {
 
-template <typename T> class variable {
+template <arithmetic T> class variable_impl {
 public:
     using value_type = T;
 
@@ -10,7 +13,7 @@ public:
     void gradient(value_type const adjoint) { m_gradient += adjoint; }
     auto gradient() const -> value_type { return m_gradient; }
 
-    explicit variable(value_type const v)
+    explicit variable_impl(value_type const v)
         : m_value { v }
     {
     }
@@ -19,5 +22,11 @@ private:
     value_type m_value {};
     value_type m_gradient {};
 };
+
+template <arithmetic T> using variable_ptr = std::shared_ptr<variable_impl<T>>;
+template <arithmetic T> auto variable(T const value) -> variable_ptr<T>
+{
+    return std::make_shared<variable_impl<T>>(value);
+}
 
 }

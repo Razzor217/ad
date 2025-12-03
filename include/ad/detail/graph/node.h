@@ -11,4 +11,7 @@ concept node = requires(N n) {
     { n.gradient(std::declval<typename N::value_type>()) };
 };
 
+template <typename T>
+concept arithmetic = std::is_arithmetic_v<T>;
+
 }
