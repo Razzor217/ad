@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <ad/differentiation.h>
 #include <ad/dual.h>
 
 auto main() -> int

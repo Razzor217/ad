@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ad/detail/differentiation/forward.h>
+#include <ad/detail/dual/differentiation/forward.h>
 #include <ad/detail/dual/eigen.h>
 
 namespace ad::detail {

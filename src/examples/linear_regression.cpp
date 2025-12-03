@@ -1,7 +1,6 @@
 #include <iostream>
 #include <random>
 
-#include <ad/differentiation.h>
 #include <ad/dual.h>
 
 auto main() -> int
